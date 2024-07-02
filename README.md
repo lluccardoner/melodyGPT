@@ -2,6 +2,8 @@
 A GPT based model that is trained with song chords text.
 
 ## Dataset
+
+### melodyGPT-song-chords-text-1 ([huggingface](https://huggingface.co/datasets/lluccardoner/melodyGPT-song-chords-text-1))
 The initial dataset is created by aggregating the chords of each song given by the [Chords and Lyrics Dataset](https://www.kaggle.com/datasets/eitanbentora/chords-and-lyrics-dataset). 
 You can see in the dataset folder notebooks with the code used to do so.
 Also, the special characters that are not chords are analysed.
