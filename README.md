@@ -43,6 +43,11 @@ new_tokens = chords_gpt2_tokenizer.tokenize(example_chords)
 # new_tokens: ['Intro', ':', 'ĠAdim', 'ĠG', '7', '/', '13', 'ĠEm', 'ĠBb', 'Ġ(', '4', 'x', ')', 'ĠG', '#', 'dim', 'ĠBm', '/', 'C', 'ĠF', '#', 'm', 'ĠAb', '|---------------------------------|', 'Ġ(', 'Bridge', ')', 'ĠC', 'ĠG', 'ĠEm', '7', 'ĠAsus', '4']
 ```
 
+## Model
+
+For the model we will train a GPT2 model of 124M parameters. 
+For that we will follow this [lecture](https://www.youtube.com/watch?v=l8pRSuU81PU&list=LL&index=1&t=15s) by Andrej Karpathy.
+
 ## Other
 
 Use a virtual environment with Jupyter Notebook [blog](https://janakiev.com/blog/jupyter-virtual-envs/).

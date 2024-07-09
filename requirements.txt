@@ -2,5 +2,8 @@
 transformers==4.42.3
 datasets==2.20.0
 
+# pytorch
+torch==2.2.2
+
 # Jupyter notebook
 ipywidgets==8.1.3
