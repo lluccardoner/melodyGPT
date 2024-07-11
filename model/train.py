@@ -16,11 +16,17 @@ if __name__ == "__main__":
     tokens = gpt2_tokenizer.encode(chords)
     B, T = 4, 32
     buf = torch.tensor(tokens[:B * T + 1])
+    buf = buf.to(device)
     x = buf[:-1].view(B, T)
     y = buf[1:].view(B, T)
 
     model = GPT(GPTConfig())
 
-    logits, loss = model(x, y)
-
-    print(loss)
+    # optimize!
+    optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
+    for i in range(50):
+        optimizer.zero_grad()
+        logits, loss = model(x, y)
+        loss.backward()
+        optimizer.step()
+        print(f"step {i}, loss: {loss.item()}")
