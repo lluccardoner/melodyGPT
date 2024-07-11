@@ -1,7 +1,6 @@
 import torch
-from torch.nn import functional as F
-from transformers import AutoTokenizer, PreTrainedTokenizer
 from datasets import load_dataset
+from transformers import AutoTokenizer
 
 from gpt import GPT, GPTConfig
 from utils import get_device
@@ -22,6 +21,6 @@ if __name__ == "__main__":
 
     model = GPT(GPTConfig())
 
-    logits = model(x)
+    logits, loss = model(x, y)
 
-    print(logits.shape)
+    print(loss)
