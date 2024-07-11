@@ -48,6 +48,29 @@ new_tokens = chords_gpt2_tokenizer.tokenize(example_chords)
 For the model we will train a GPT2 model of 124M parameters. 
 For that we will follow this [lecture](https://www.youtube.com/watch?v=l8pRSuU81PU&list=LL&index=1&t=15s) by Andrej Karpathy.
 
+### GPT2
+
+The pretrained GPT2 model does not perform good on predicting the next chords.
+
+With the given code from the generate script:
+```python
+# Pachelbel Canon in D chords: "D A Bm F#m G D G A"
+chords = "D A Bm F#m"
+
+gpt2_tokenizer = AutoTokenizer.from_pretrained("gpt2")
+gpt2 = GPT.from_pretrained('gpt2')
+generate(chords, gpt2_tokenizer, gpt2)
+```
+
+The output is the following:
+```text
+> D A Bm F#m F#m, C Cm %D A B - E A B E C - - # E - E
+> D A Bm F#m F#m F#m F#m F#m F#m F#m F#m F#
+> D A Bm F#m G#m G#m G#m G#m G#m G#m G#m G#
+> D A Bm F#m Sb Ss Sc S Tm Vb W E R R Tt W Bw W F 1 3
+> D A Bm F#m F#z %.1 F#t B M %.0% f(A A C B m F
+```
+
 ## Other
 
 Use a virtual environment with Jupyter Notebook [blog](https://janakiev.com/blog/jupyter-virtual-envs/).
