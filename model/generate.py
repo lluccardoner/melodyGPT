@@ -22,7 +22,8 @@ def generate_predictions(x: torch.Tensor, model: GPT, max_length: int = 30,
     model.to(device)
     # generate! right now x is (B, T) where B = num_sequences, T = num_tokens
     torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)
     while x.size(1) < max_length:
         # forward the model to get the logits
         with torch.no_grad():
