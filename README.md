@@ -71,6 +71,19 @@ The output is the following:
 > D A Bm F#m F#z %.1 F#t B M %.0% f(A A C B m F
 ```
 
+### MelodyGPT v1
+
+A GPT2 model trained with the melodyGPT-song-chords-text-1 dataset using the GPT2 tokenizer.
+
+### MelodyGPT v2
+
+A GPT2 model trained with the melodyGPT-song-chords-text-1 dataset using the trained melodyGPT-song-chords-tokenizer-1.
+
+### TODO
+
+* Encountered problems when adding the changes to use [bfloat16](https://github.com/karpathy/build-nanogpt/commit/177e4cd5b4cc05df4bb637ed1a9e55911d6f1e2c).
+* Encountered problems when adding [torch compile](https://github.com/karpathy/build-nanogpt/commit/fb8bd6efd1bd7c4c894c9256f3bf41420efd1cb2) due to the python version 3.12
+
 ## Other
 
 Use a virtual environment with Jupyter Notebook [blog](https://janakiev.com/blog/jupyter-virtual-envs/).
