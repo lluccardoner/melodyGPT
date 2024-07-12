@@ -7,3 +7,5 @@ torch==2.2.2
 
 # Jupyter notebook
 ipywidgets==8.1.3
+
+numpy==1.26.4
