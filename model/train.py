@@ -63,8 +63,7 @@ if __name__ == "__main__":
                 for _ in range(val_loss_steps):
                     x, y = data_loader.next_batch_val()
                     x, y = x.to(device), y.to(device)
-                    with torch.autocast(device_type=device_type, dtype=torch.bfloat16):
-                        logits, loss = model(x, y)
+                    logits, loss = model(x, y)
                     loss = loss / val_loss_steps
                     val_loss_accum += loss.detach()
 
@@ -87,8 +86,7 @@ if __name__ == "__main__":
         for micro_step in range(grad_accum_steps):
             x, y = data_loader.next_batch_train()
             x, y = x.to(device), y.to(device)
-            with torch.autocast(device_type=device_type, dtype=torch.bfloat16):
-                logits, loss = model(x, y)
+            logits, loss = model(x, y)
             # we have to scale the loss to account for gradient accumulation,
             # because the gradients just add on each successive backward().
             # addition of gradients corresponds to a SUM in the objective, but
