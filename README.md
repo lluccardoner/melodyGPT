@@ -153,6 +153,7 @@ Metrics plot of training (validation loss computed each 5 steps):
 
 ### Problems
 
+See branch [gpu-changes](https://github.com/lluccardoner/melodyGPT/tree/gpu-changes?tab=readme-ov-file):
 * Encountered problems when adding the changes to use [bfloat16](https://github.com/karpathy/build-nanogpt/commit/177e4cd5b4cc05df4bb637ed1a9e55911d6f1e2c).
 * Encountered problems when adding [torch compile](https://github.com/karpathy/build-nanogpt/commit/fb8bd6efd1bd7c4c894c9256f3bf41420efd1cb2) due to the python version 3.12
 
