@@ -104,6 +104,6 @@ if __name__ == "__main__":
         tokens_processed = data_loader.B * data_loader.T * grad_accum_steps
         tokens_per_sec = tokens_processed / dt
         with open(log_file, "a") as f:
-            log_msg = f"step {step:5d} | train_loss: {loss_accum:.6f}|  val_loss: {loss_accum:.6f} | lr {lr:.4e} | norm: {norm:.4f} | dt: {dt * 1000:.2f}ms | tok/sec: {tokens_per_sec:.2f}"
+            log_msg = f"step {step:5d} | train_loss: {loss_accum:.6f}|  val_loss: {val_loss_accum:.6f} | lr {lr:.4e} | norm: {norm:.4f} | dt: {dt * 1000:.2f}ms | tok/sec: {tokens_per_sec:.2f}"
             print(log_msg)
-            f.write(log_msg)
+            f.write(log_msg + "\n")
