@@ -24,14 +24,17 @@ if __name__ == "__main__":
     grad_accum_steps = total_batch_size // (B * T)
     print(f"total desired batch size: {total_batch_size}")
     print(f"=> calculated gradient accumulation steps: {grad_accum_steps}")
-    train_loader = DataLoaderLite(B=B, T=T, encoder=gpt2_tokenizer)
+    data_loader = DataLoaderLite(B=B, T=T, encoder=gpt2_tokenizer)
 
     torch.set_float32_matmul_precision('high')
 
     model = GPT(GPTConfig(vocab_size=50304))
     model.to(device)
 
-    lr_scheduler = LRScheduler()
+    max_steps = int(len(data_loader.train_tokens) / total_batch_size)
+    warmup_steps = int(0.05 * len(data_loader.train_tokens) / total_batch_size)  # GPT-2 warmup over 375 million tokens but we have less
+    print(f"{max_steps=}, {warmup_steps=}")
+    lr_scheduler = LRScheduler(max_steps=max_steps, warmup_steps=warmup_steps)
 
     # optimize!
     optimizer = model.configure_optimizers(weight_decay=0.1, learning_rate=6e-4, device=device)
