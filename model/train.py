@@ -64,6 +64,18 @@ if __name__ == "__main__":
                     loss = loss / val_loss_steps
                     val_loss_accum += loss.detach()
 
+                # Model checkpoints
+                checkpoint_path = os.path.join(log_dir, f"model_{step:05d}.pt")
+                checkpoint = {
+                    'model': model.state_dict(),
+                    'config': model.config,
+                    'step': step,
+                    'val_loss': val_loss_accum
+                }
+                # you might also want to add optimizer.state_dict() and
+                # rng seeds etc., if you wanted to more exactly resume training
+                torch.save(checkpoint, checkpoint_path)
+
         # Training
         model.train()
         optimizer.zero_grad()
