@@ -52,17 +52,7 @@ For that we will follow this [lecture](https://www.youtube.com/watch?v=l8pRSuU81
 
 The pretrained GPT2 model does not perform good on predicting the next chords.
 
-With the given code from the generate script:
-```python
-# Pachelbel Canon in D chords: "D A Bm F#m G D G A"
-chords = "D A Bm F#m"
-
-gpt2_tokenizer = AutoTokenizer.from_pretrained("gpt2")
-gpt2 = GPT.from_pretrained('gpt2')
-generate(chords, gpt2_tokenizer, gpt2)
-```
-
-The output is the following:
+Some generation examples:
 ```text
 > D A Bm F#m F#m, C Cm %D A B - E A B E C - - # E - E
 > D A Bm F#m F#m F#m F#m F#m F#m F#m F#m F#
@@ -75,14 +65,34 @@ The output is the following:
 
 A GPT2 model trained with the melodyGPT-song-chords-text-1 dataset using the GPT2 tokenizer.
 
+Some generation examples:
+```text
+> D A Bm F#m6 F F|7 D A( CmmE  G7/ C B Em-- A	 G
+> D A Bm F#m F9 C Gmm) D E|	 Em B D G C Fm FM G m
+> D A Bm F#m| (m( Am677 B E Am5m G D	#/ C C Fm7
+> D A Bm F#m94m FF G--m G D Dm Am Dm C B AmD7 B Cm
+> D A Bm F#m B7 AbC# G E E Am C E  B#7#us C C C D	 G
+```
+
+#### Training
+
 Trained on Google Colab [notebook](https://colab.research.google.com/drive/16R157wRI70YnJOGBOzRmr9VL3V7CYYPR?usp=sharing) 
 with a Python 3.10.12 runtime with one T4 GPU.
 
 Training was done with 16,323,255 train tokens and 1,813,694 validation tokens.
 
 Micro batch size:
+* `total_batch_size = 524288`
 * `B = 4`
 * `T = 1024`
+
+GPT config:
+* `vocab_size = 50304`
+* `block_size = 1024`
+* `vocab_size = 50257`
+* `n_layer = 12`
+* `n_head = 12`
+* `n_embd = 768`
 
 LR scheduler:
 * `max_steps = 31`
