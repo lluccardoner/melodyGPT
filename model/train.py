@@ -1,3 +1,4 @@
+import os
 import time
 
 import torch
@@ -36,13 +37,21 @@ if __name__ == "__main__":
     print(f"{max_steps=}, {warmup_steps=}")
     lr_scheduler = LRScheduler(max_steps=max_steps, warmup_steps=warmup_steps)
 
+    # Loggin
+    log_dir = "log"
+    os.makedirs(log_dir, exist_ok=True)
+    log_file = os.path.join(log_dir, f"log.txt")
+    with open(log_file, "w") as f:  # open for writing to clear the file
+        pass
+
     # optimize!
     optimizer = model.configure_optimizers(weight_decay=0.1, learning_rate=6e-4, device=device)
     for step in range(lr_scheduler.max_steps):
         t0 = time.time()
+        is_last_step = (step == max_steps - 1)
 
         # Evaluation
-        if step % 100 == 0:
+        if step % 5 == 0 or is_last_step:
             model.eval()
             data_loader.reset_val()
             with torch.no_grad():
@@ -82,4 +91,7 @@ if __name__ == "__main__":
         dt = t1 - t0  # time difference in seconds
         tokens_processed = data_loader.B * data_loader.T * grad_accum_steps
         tokens_per_sec = tokens_processed / dt
-        print(f"step {step:5d} | loss: {loss_accum:.6f}|  val_loss: {loss_accum:.6f} | lr {lr:.4e} | norm: {norm:.4f} | dt: {dt * 1000:.2f}ms | tok/sec: {tokens_per_sec:.2f}")
+        with open(log_file, "a") as f:
+            log_msg = f"step {step:5d} | train_loss: {loss_accum:.6f}|  val_loss: {loss_accum:.6f} | lr {lr:.4e} | norm: {norm:.4f} | dt: {dt * 1000:.2f}ms | tok/sec: {tokens_per_sec:.2f}"
+            print(log_msg)
+            f.write(log_msg)
