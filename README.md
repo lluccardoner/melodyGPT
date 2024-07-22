@@ -75,6 +75,29 @@ The output is the following:
 
 A GPT2 model trained with the melodyGPT-song-chords-text-1 dataset using the GPT2 tokenizer.
 
+Trained on Google Colab [notebook](https://colab.research.google.com/drive/16R157wRI70YnJOGBOzRmr9VL3V7CYYPR?usp=sharing) 
+with a Python 3.10.12 runtime with one T4 GPU.
+
+Training was done with 16,323,255 train tokens and 1,813,694 validation tokens.
+
+Micro batch size:
+* `B = 4`
+* `T = 1024`
+
+LR scheduler:
+* `max_steps = 31`
+* `warmup_steps = 1`
+
+Final loss:
+* `train_loss: 3.588122`
+* `val_loss: 3.594247`
+
+I was using `torch.compile` but the cast to `bfloat16` was not working.
+
+Metrics plot of training (validation loss computed each 5 steps):
+
+![metrics_plot_melodyGPT_v1.png](assets%2Fmetrics_plot_melodyGPT_v1.png)
+
 ### MelodyGPT v2
 
 A GPT2 model trained with the melodyGPT-song-chords-text-1 dataset using the trained melodyGPT-song-chords-tokenizer-1.
