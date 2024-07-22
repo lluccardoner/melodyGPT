@@ -40,10 +40,27 @@ if __name__ == "__main__":
     optimizer = model.configure_optimizers(weight_decay=0.1, learning_rate=6e-4, device=device)
     for step in range(lr_scheduler.max_steps):
         t0 = time.time()
+
+        # Evaluation
+        if step % 100 == 0:
+            model.eval()
+            data_loader.reset_val()
+            with torch.no_grad():
+                val_loss_accum = 0.0
+                val_loss_steps = 5
+                for _ in range(val_loss_steps):
+                    x, y = data_loader.next_batch_val()
+                    x, y = x.to(device), y.to(device)
+                    logits, loss = model(x, y)
+                    loss = loss / val_loss_steps
+                    val_loss_accum += loss.detach()
+
+        # Training
+        model.train()
         optimizer.zero_grad()
         loss_accum = 0.0
         for micro_step in range(grad_accum_steps):
-            x, y = train_loader.next_batch()
+            x, y = data_loader.next_batch_train()
             x, y = x.to(device), y.to(device)
             logits, loss = model(x, y)
             # we have to scale the loss to account for gradient accumulation,
@@ -63,6 +80,6 @@ if __name__ == "__main__":
             torch.cuda.synchronize()  # wait for the GPU to finish work
         t1 = time.time()
         dt = t1 - t0  # time difference in seconds
-        tokens_processed = train_loader.B * train_loader.T * grad_accum_steps
+        tokens_processed = data_loader.B * data_loader.T * grad_accum_steps
         tokens_per_sec = tokens_processed / dt
-        print(f"step {step:4d} | loss: {loss_accum:.6f} | lr {lr:.4e} | norm: {norm:.4f} | dt: {dt * 1000:.2f}ms | tok/sec: {tokens_per_sec:.2f}")
+        print(f"step {step:5d} | loss: {loss_accum:.6f}|  val_loss: {loss_accum:.6f} | lr {lr:.4e} | norm: {norm:.4f} | dt: {dt * 1000:.2f}ms | tok/sec: {tokens_per_sec:.2f}")
