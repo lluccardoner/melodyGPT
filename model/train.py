@@ -11,6 +11,7 @@ from lr import LRScheduler
 from utils import get_device
 
 device = get_device()
+device_type = "cuda" if device.startswith("cuda") else "cpu"
 
 if __name__ == "__main__":
     torch.manual_seed(1337)
@@ -47,7 +48,7 @@ if __name__ == "__main__":
         pass
 
     # optimize!
-    optimizer = model.configure_optimizers(weight_decay=0.1, learning_rate=6e-4, device=device)
+    optimizer = model.configure_optimizers(weight_decay=0.1, learning_rate=6e-4, device_type=device_type)
     for step in range(lr_scheduler.max_steps):
         t0 = time.time()
         is_last_step = (step == max_steps - 1)
@@ -62,7 +63,8 @@ if __name__ == "__main__":
                 for _ in range(val_loss_steps):
                     x, y = data_loader.next_batch_val()
                     x, y = x.to(device), y.to(device)
-                    logits, loss = model(x, y)
+                    with torch.autocast(device_type=device_type, dtype=torch.bfloat16):
+                        logits, loss = model(x, y)
                     loss = loss / val_loss_steps
                     val_loss_accum += loss.detach()
 
@@ -85,7 +87,7 @@ if __name__ == "__main__":
         for micro_step in range(grad_accum_steps):
             x, y = data_loader.next_batch_train()
             x, y = x.to(device), y.to(device)
-            with torch.autocast(device_type=device, dtype=torch.bfloat16):
+            with torch.autocast(device_type=device_type, dtype=torch.bfloat16):
                 logits, loss = model(x, y)
             # we have to scale the loss to account for gradient accumulation,
             # because the gradients just add on each successive backward().
@@ -100,7 +102,7 @@ if __name__ == "__main__":
         for param_group in optimizer.param_groups:
             param_group['lr'] = lr
         optimizer.step()
-        if torch.cuda.is_available():
+        if device_type == "cuda":
             torch.cuda.synchronize()  # wait for the GPU to finish work
         t1 = time.time()
         dt = t1 - t0  # time difference in seconds
