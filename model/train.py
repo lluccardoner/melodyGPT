@@ -32,6 +32,7 @@ if __name__ == "__main__":
 
     model = GPT(GPTConfig(vocab_size=50304))
     model.to(device)
+    model = torch.compile(model)
 
     max_steps = int(len(data_loader.train_tokens) / total_batch_size)
     warmup_steps = int(0.05 * len(data_loader.train_tokens) / total_batch_size)  # GPT-2 warmup over 375 million tokens but we have less
