@@ -1,4 +1,4 @@
-"""Train melodyGPT v1 with the original GPT2 tokenizer"""
+"""Train melodyGPT v2 with the trained melodyGPT-song-chords-tokenizer-1"""
 import os
 import time
 
@@ -17,7 +17,7 @@ if __name__ == "__main__":
     if torch.cuda.is_available():
         torch.cuda.manual_seed(1337)
 
-    gpt2_tokenizer = AutoTokenizer.from_pretrained("gpt2")
+    melodyGPT_tokenizer = AutoTokenizer.from_pretrained("lluccardoner/melodyGPT-song-chords-tokenizer-1")
 
     total_batch_size = 524288  # 2**19, ~0.5M, in number of tokens (from GPT2)
     B = 16  # micro batch size
@@ -26,11 +26,11 @@ if __name__ == "__main__":
     grad_accum_steps = total_batch_size // (B * T)
     print(f"total desired batch size: {total_batch_size}")
     print(f"=> calculated gradient accumulation steps: {grad_accum_steps}")
-    data_loader = DataLoaderLite(B=B, T=T, encoder=gpt2_tokenizer)
+    data_loader = DataLoaderLite(B=B, T=T, encoder=melodyGPT_tokenizer)
 
     torch.set_float32_matmul_precision('high')
 
-    model = GPT(GPTConfig(vocab_size=50304))
+    model = GPT(GPTConfig(vocab_size=32765))  # Vocab size of tokenizer 19972 but we make it a nice number 2**15
     model.to(device)
 
     max_steps = int(len(data_loader.train_tokens) / total_batch_size)
