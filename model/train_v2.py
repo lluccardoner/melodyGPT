@@ -11,6 +11,7 @@ from lr import LRScheduler
 from utils import get_device
 
 device = get_device()
+device_type = "cuda" if device.startswith("cuda") else "cpu"
 
 if __name__ == "__main__":
     torch.manual_seed(1337)
@@ -32,6 +33,7 @@ if __name__ == "__main__":
 
     model = GPT(GPTConfig(vocab_size=32765))  # Vocab size of tokenizer 19972 but we make it a nice number 2**15
     model.to(device)
+    model = torch.compile(model)
 
     max_steps = int(len(data_loader.train_tokens) / total_batch_size)
     warmup_steps = int(0.05 * len(data_loader.train_tokens) / total_batch_size)  # GPT-2 warmup over 375 million tokens but we have less
@@ -46,7 +48,7 @@ if __name__ == "__main__":
         pass
 
     # optimize!
-    optimizer = model.configure_optimizers(weight_decay=0.1, learning_rate=6e-4, device=device)
+    optimizer = model.configure_optimizers(weight_decay=0.1, learning_rate=6e-4, device_type=device_type)
     for step in range(lr_scheduler.max_steps):
         t0 = time.time()
         is_last_step = (step == max_steps - 1)
@@ -98,7 +100,7 @@ if __name__ == "__main__":
         for param_group in optimizer.param_groups:
             param_group['lr'] = lr
         optimizer.step()
-        if torch.cuda.is_available():
+        if device_type == "cuda":
             torch.cuda.synchronize()  # wait for the GPU to finish work
         t1 = time.time()
         dt = t1 - t0  # time difference in seconds
