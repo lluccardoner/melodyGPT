@@ -83,3 +83,19 @@ if __name__ == "__main__":
                 melodyGPT1_state_dict[key_name].copy_(state_dict[key])
     print("Generating with MelodyGPT v1")
     generate(chords, gpt2_tokenizer, melodyGPT1)
+
+    chords_gpt2_tokenizer = AutoTokenizer.from_pretrained("lluccardoner/melodyGPT-song-chords-tokenizer-1")
+
+    melodyGPT2_checkpoint_path = os.path.join(dir_path, "../logs/melodyGPT2/model_00026.pt")
+    melodyGPT2_checkpoint = torch.load(melodyGPT2_checkpoint_path, map_location=device)
+    melodyGPT2 = GPT(melodyGPT2_checkpoint["config"])
+    state_dict = melodyGPT2_checkpoint["model"]
+    melodyGPT2_state_dict = melodyGPT2.state_dict()
+    for key in state_dict:
+        if not key.endswith("attn.bias"):  # TODO model was trained wit it but it is not used
+            key_name = key.replace("_orig_mod.", "")
+            assert state_dict[key].shape == melodyGPT2_state_dict[key_name].shape
+            with torch.no_grad():
+                melodyGPT2_state_dict[key_name].copy_(state_dict[key])
+    print("Generating with MelodyGPT v2")
+    generate(chords, chords_gpt2_tokenizer, melodyGPT2)

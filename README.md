@@ -89,7 +89,6 @@ Micro batch size:
 GPT config:
 * `vocab_size = 50304`
 * `block_size = 1024`
-* `vocab_size = 50257`
 * `n_layer = 12`
 * `n_head = 12`
 * `n_embd = 768`
@@ -112,10 +111,57 @@ Metrics plot of training (validation loss computed each 5 steps):
 
 A GPT2 model trained with the melodyGPT-song-chords-text-1 dataset using the trained melodyGPT-song-chords-tokenizer-1.
 
-### TODO
+Some generation examples:
+```text
+> D A Bm F#m4##<|endoftext|> F7 Am Ab D C C - Bb G F B D C/ Eb Am Bm GC
+> D A Bm F#m#9 D G C9)) Em<|endoftext|> Bb/ E7 G D6 C#M G Bb C Am
+> D A Bm F#m<|endoftext|>6 C Abm4 F F E6m5 C G7 Bm A B D D# C F#
+> D A Bm F#m9  C#F G Eb C G77 Cm9 C D EmD F E D C F
+> D A Bm F#m C7G0 A G Em Emm D Em Bb E A F A-- D D D7 Bm G E
+```
+
+#### Training
+
+Trained on Google Colab [notebook](https://colab.research.google.com/drive/1JHJ3gAGowE2D_gRR2lPbOAmOF8zQtj01?usp=sharing) 
+with a Python 3.10.12 runtime with one T4 GPU.
+
+Training was done with 14,252,056 train tokens and 1,583,561 validation tokens.
+
+Micro batch size:
+* `total_batch_size = 524288`
+* `B = 4`
+* `T = 1024`
+
+GPT config:
+* `vocab_size = 32765`
+* `block_size = 1024`
+* `n_layer = 12`
+* `n_head = 12`
+* `n_embd = 768`
+
+LR scheduler:
+* `max_steps = 27`
+* `warmup_steps = 1`
+
+Final loss:
+* `train_loss: 3.799472`
+* `val_loss: 3.795517`
+
+Metrics plot of training (validation loss computed each 5 steps):
+
+![metrics_plot_melodyGPT_v2.png](assets%2Fmetrics_plot_melodyGPT_v2.png)
+
+### Problems
 
 * Encountered problems when adding the changes to use [bfloat16](https://github.com/karpathy/build-nanogpt/commit/177e4cd5b4cc05df4bb637ed1a9e55911d6f1e2c).
 * Encountered problems when adding [torch compile](https://github.com/karpathy/build-nanogpt/commit/fb8bd6efd1bd7c4c894c9256f3bf41420efd1cb2) due to the python version 3.12
+
+* MelodyGPT2 outputs `<|endoftext|>` token. Review tokenizer training.
+
+## TODO
+
+* Upload models to Huggingface
+* Create Huggingface space to try out the predictions
 
 ## Other
 
